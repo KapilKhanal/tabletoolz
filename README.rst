@@ -32,6 +32,14 @@ Features
 
 * TODO
 
+Functions Skeletons
+..*dplyr style select function
+....select(df,cols)
+'''input1 : A List of Dictionaries where each dictionaries key is column and value representing value of that column
+   input2 : Cols: List of column to select
+   Output : List of dictionary with the cols(key) on the Cols list
+   Should output a generator object'''
+
 Credits
 -------
 
