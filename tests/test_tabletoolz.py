@@ -13,18 +13,17 @@ from tabletoolz import cli
 
 @pytest.fixture
 def response():
-    """Sample pytest fixture.
+    df = [{"Name":"Kapil","Major":"Data"},{"Name":"Mapil","Major":"Hata"}]
+    cols = ["Name"]
+    return list(select(df,cols))
+    
 
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-
-
-def test_content(response):
+def test_select(response):
     """Sample pytest test function with the pytest fixture as an argument."""
     # from bs4 import BeautifulSoup
     # assert 'GitHub' in BeautifulSoup(response.content).title.string
+    output = [{'Name': 'Kapil'}, {'Name': 'Mapil'}]
+    assert response == output
 
 
 def test_command_line_interface():
