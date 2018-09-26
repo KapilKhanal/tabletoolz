@@ -11,5 +11,5 @@ def select_yield(df,cols):
                 
 
 select = lambda df,cols: ({k:v for k,v in row.items() if k in cols} for row in df)
-list(next(select_yield(df,["Name","Major"])))
+#list(next(select_yield(df,["Name","Major"])))
 
