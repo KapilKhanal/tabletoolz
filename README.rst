@@ -20,7 +20,13 @@ tabletoolz
 
 
 
-Lazy Evaluation of tables
+**Lazy Manipulation of tables in a** *dplyr* **fashion using similar data manipulation verbs**
+*Select
+'''It selects a column from the dataframe. A dataframe is represented as a list of dictionaries. Each row is a dictionary of column:value pair.'''
+*Mutate
+'''It mutates a existing row. if a new column name is provided then the new column will be added in same row as new_column:mutated_value of the row. one can also mutate existing row but tis will overwrite the existing value with mutated one.'''
+
+
 
 
 * Free software: MIT license
@@ -39,3 +45,6 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+
+
+
