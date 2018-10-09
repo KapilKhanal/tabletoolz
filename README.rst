@@ -21,8 +21,20 @@ tabletoolz
 
 
 **Lazy Manipulation of tables in a** *dplyr* **fashion using similar data manipulation verbs**
+
+
 *Select
 '''It selects a column from the dataframe. A dataframe is represented as a list of dictionaries. Each row is a dictionary of column:value pair.'''
+Functions Skeletons
+..*dplyr style select function
+....select(df,cols)
+'''input1 : A List of Dictionaries where each dictionaries key is column and value representing value of that column
+   input2 : Cols: List of column to select
+   Output : List of dictionary with the cols(key) on the Cols list
+   Should output a generator object'''
+
+
+
 *Mutate
 '''It mutates a existing row. if a new column name is provided then the new column will be added in same row as new_column:mutated_value of the row. one can also mutate existing row but tis will overwrite the existing value with mutated one.'''
 
