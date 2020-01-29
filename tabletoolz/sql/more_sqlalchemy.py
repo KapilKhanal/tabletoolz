@@ -3,7 +3,7 @@ from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import _interpret_as_column_or_from
 from sqlalchemy.sql.annotation import AnnotatedColumn
 from sqlalchemy import column
-from functoolz import pipeable
+from ..functoolez import pipeable
 from sqlparse import format
 
 DTYPES_TO_SQLALCHEMY_TYPES = {'O':String,
@@ -13,14 +13,14 @@ DTYPES_TO_SQLALCHEMY_TYPES = {'O':String,
 
 
 pprint = lambda stmt: print(format(str(stmt),
-                             reindent=True, 
+                             reindent=True,
                              keyword_case='upper'))
 
 
 def get_sql_types(df):
-    sql_type = lambda dtype: DTYPES_TO_SQLALCHEMY_TYPES[dtype.kind] 
+    sql_type = lambda dtype: DTYPES_TO_SQLALCHEMY_TYPES[dtype.kind]
     cols_and_dtypes = lambda df: zip(df.columns, df.dtypes)
-    return {col:sql_type(dtype) 
+    return {col:sql_type(dtype)
             for col, dtype in cols_and_dtypes(df)}
 
 
@@ -86,24 +86,21 @@ def all_but(cols):
         raise ValueError('all_but arguments need to all be from the same table')
     dropped_names = [col.name for col in  dropped_cols]
     return [c for c in first_col.table.columns if c.name not in dropped_names]
-                                
+
 
 def cols_from(col, inclusive=True):
     c = _interpret_as_column_or_from(col)
     return  get_column_list(c, from_=c.name, inclusive=inclusive)
-    
-    
+
+
 def cols_to(col, inclusive=True):
     c = _interpret_as_column_or_from(col)
     return  get_column_list(c, to=c.name, inclusive=inclusive)
-    
-    
+
+
 def cols_between(col1, col2, inclusive=True):
     c1 = _interpret_as_column_or_from(col1)
     c2 = _interpret_as_column_or_from(col2)
-    if c1.table.name != c2.table.name: 
+    if c1.table.name != c2.table.name:
         raise ValueError("cols_between needs both columns to be from the same table")
     return get_column_list(c1, from_=c1.name, to=c2.name, inclusive=inclusive)
-
-
-
