@@ -1,8 +1,10 @@
 import pytest
 
 from tabletoolz import *
+from pandas.testing import assert_frame_equal
 
-Mean = _sql_func('avg')
+
+Mean = sql_func('avg')
 
 @pytest.fixture
 def response():

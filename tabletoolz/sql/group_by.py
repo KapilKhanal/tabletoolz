@@ -8,5 +8,5 @@ def group_by(cols, stmt):
     Input: Columns to "group_by". Columns have to be in a [list].
     Output: A grouped statement,
     """
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     return s.group_by(*[get_column(s, c) for c in cols])

@@ -7,7 +7,7 @@ import pytest
 
 from click.testing import CliRunner
 
-from tabletoolz import tabletoolz
+from tabletoolz.pyspark import *
 from tabletoolz import cli
 
 
