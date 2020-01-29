@@ -281,7 +281,7 @@ def intersperse(lst, item):
     result[0::2] = lst
     return result
 
-def _sql_func(attr):
+def sql_func(attr):
     return make_symbolic(getattr(func_sql, attr))
 
 #mean = _sql_func(func.mean) # func.mean is sql alchemy function for mean

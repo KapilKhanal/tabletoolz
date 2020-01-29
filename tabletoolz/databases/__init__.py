@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 
 
-engine = create_engine("sqlite:///tabletoolz/Car_Database.db")
+engine = create_engine("sqlite:///tabletoolz/databases/Car_Database.db")
 
 Base = automap_base()
 Base.prepare(engine, reflect=True)
@@ -17,4 +17,3 @@ dealers = Base.classes.Dealers
 manufacture_plant = Base.classes.Manufacture_Plant
 models = Base.classes.Models
 
-print("done")

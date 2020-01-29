@@ -1,10 +1,5 @@
-
-# coding: utf-8
-
-# In[ ]:
-
-
 from funcy import merge, join
+
 def mutate_row(row,**kwargs):
     '''input: row,type:dictionary and keyword arguments of column:function to mutate
     output: mutated row based onfunction '''

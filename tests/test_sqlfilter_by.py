@@ -1,10 +1,8 @@
-import os
-import sys
-sys.path.append((os.path.dirname(os.path.dirname(__file__))))
-print(sys.path)
-from tabletoolz.databases import *
-from tabletoolz.sql import *
+import pytest
 
+from tabletoolz import *
+
+@pytest.fixture
 def response():
     df = car_options >> to_statement >> filter_by(T.color == 'Blue') >> to_pandas(engine)
     return list(df)

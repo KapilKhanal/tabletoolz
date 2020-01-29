@@ -4,7 +4,7 @@ import pytest
 
 from click.testing import CliRunner
 
-from tabletoolz import tabletoolz
+from tabletoolz import *
 from tabletoolz import cli
 
 # import database
@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 
-engine = create_engine("sqlite:///databases/Car_Database.db")
+engine = create_engine("sqlite:///tabletoolz/databases/Car_Database.db")
 
 Base = automap_base()
 Base.prepare(engine, reflect=True)

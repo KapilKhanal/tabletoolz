@@ -1,6 +1,6 @@
 import pytest
 
-from .tabletoolz import *
+from tabletoolz import *
 
 
 @pytest.fixture
@@ -17,14 +17,14 @@ def test_mutate(response):
     assert response == output
     
 @pytest.fixture
-def response():
+def response_2():
     df = dealers >> to_statement >> mutate(initials = 'Mr.' + T.dealer_name) >> to_pandas(engine)
     return list(df)
 
-def test_mutate(response):
+def test_mutate_2(response_2):
     # Test calculated column
     query = dealers >> to_statement >> to_pandas(engine)
     query['initials'] = 'Mr.' + query['dealer_name']
     expected = pd.DataFrame(query)
     output = list(expected)
-    assert response == output
+    assert response_2 == output
