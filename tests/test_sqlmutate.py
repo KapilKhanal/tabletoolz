@@ -1,6 +1,6 @@
 import pytest
 
-from tabletoolz import *
+from .tabletoolz import *
 
 
 @pytest.fixture

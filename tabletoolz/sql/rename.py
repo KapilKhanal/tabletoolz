@@ -1,4 +1,5 @@
 from .base import *
+from tabletoolz.sql import drop
 
 @pipeable
 def rename(stmt, **kwargs):
@@ -8,7 +9,7 @@ def rename(stmt, **kwargs):
     Input: A list of columns and its new name.
     Output: Statement with renamed columns.
     """
-    s = _maybe_wrap(stmt)
-    s = _add_columns(s, kwargs).alias()
+    s = maybe_wrap(stmt)
+    s = add_columns(s, kwargs).alias()
     s = drop(kwargs.values(), s)
     return s

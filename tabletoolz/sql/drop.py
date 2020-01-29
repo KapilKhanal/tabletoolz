@@ -1,5 +1,5 @@
 from .base import *
-
+from .select import *
 @pipeable
 def drop(cols, stmt):
     """

@@ -8,5 +8,5 @@ def select(cols, stmt):
     Input: Name of columns, columns have to be in a [list].
     Output: Statement with only selected columns.
     """
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     return s.with_only_columns([get_column(s, c) for c in cols])

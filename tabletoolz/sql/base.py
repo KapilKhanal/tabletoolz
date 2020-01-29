@@ -9,9 +9,10 @@ from sqlalchemy import Integer, Float, String, DateTime
 from sqlalchemy import column
 from sqlparse import format
 from dfply import make_symbolic, Intention
-from functoolz import pipeable
+from ..functoolez import pipeable
 from functools import reduce
 import pandas as pd
+
 
 
 DTYPES_TO_SQLALCHEMY_TYPES = {'O':String,
@@ -21,14 +22,14 @@ DTYPES_TO_SQLALCHEMY_TYPES = {'O':String,
 
 
 pprint = lambda stmt: print(format(str(stmt),
-                             reindent=True, 
+                             reindent=True,
                              keyword_case='upper'))
 
 
 def get_sql_types(df):
-    sql_type = lambda dtype: DTYPES_TO_SQLALCHEMY_TYPES[dtype.kind] 
+    sql_type = lambda dtype: DTYPES_TO_SQLALCHEMY_TYPES[dtype.kind]
     cols_and_dtypes = lambda df: zip(df.columns, df.dtypes)
-    return {col:sql_type(dtype) 
+    return {col:sql_type(dtype)
             for col, dtype in cols_and_dtypes(df)}
 
 
@@ -94,22 +95,22 @@ def all_but(cols):
         raise ValueError('all_but arguments need to all be from the same table')
     dropped_names = [col.name for col in  dropped_cols]
     return [c for c in first_col.table.columns if c.name not in dropped_names]
-                                
+
 
 def cols_from(col, inclusive=True):
     c = _interpret_as_column_or_from(col)
     return  get_column_list(c, from_=c.name, inclusive=inclusive)
-    
-    
+
+
 def cols_to(col, inclusive=True):
     c = _interpret_as_column_or_from(col)
     return  get_column_list(c, to=c.name, inclusive=inclusive)
-    
-    
+
+
 def cols_between(col1, col2, inclusive=True):
     c1 = _interpret_as_column_or_from(col1)
     c2 = _interpret_as_column_or_from(col2)
-    if c1.table.name != c2.table.name: 
+    if c1.table.name != c2.table.name:
         raise ValueError("cols_between needs both columns to be from the same table")
     return get_column_list(c1, from_=c1.name, to=c2.name, inclusive=inclusive)
 
@@ -136,12 +137,12 @@ def pprint(stmt):
            keyword_case='upper'))
     return stmt
 
-def _maybe_wrap(stmt):
+def maybe_wrap(stmt):
     if isinstance(stmt, Alias):
         return select_sql([col for col in stmt.c]).select_from(stmt)
     else:
         return stmt
-    
+
 @pipeable
 def head(stmt, num = 5):
     """
@@ -150,7 +151,7 @@ def head(stmt, num = 5):
     Input: A statement
     Output: n rows of a statement
     """
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     return s.limit(num)
 
 def _original(stmt):
@@ -171,7 +172,7 @@ References the current table with T intention
 """
 
 def column_dict(stmt):
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     if len(s.froms) == 1:
         return {col.name:col for col in s.froms[0].c}
     elif len(s.froms) > 1:
@@ -202,7 +203,7 @@ def get_column(stmt, col, allow_str=True):
     else:
         msg = "Expected " + ("string or " if allow_str else "") + "Intention, got {0}"
         raise ValueError(msg.format(type(col)))
-        
+
 @pipeable
 def filter_by(cond, stmt):
     """
@@ -211,7 +212,7 @@ def filter_by(cond, stmt):
     Input: Logical predicates defined in terms of the variables in a statement.
     Output: A filtered statement.
     """
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     if isinstance(cond, Intention):
         cond = cond.evaluate(s)
     else:
@@ -223,7 +224,7 @@ def _kwargs_to_column_expr(stmt, kwargs):
              for name, col in kwargs.items()]
 
 
-def _add_columns(stmt, kwargs):
+def add_columns(stmt, kwargs):
     transforms = _kwargs_to_column_expr(stmt, kwargs)
     add_next_column = lambda stmt, col: stmt.column(col)
     return reduce(add_next_column, transforms, stmt)
@@ -241,17 +242,17 @@ def _mutated_refs(mutated_cols, col_expr):
 @pipeable
 def mutate_star(stmt, **kwargs):
     mutated_cols = []
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     for name, col_expr in kwargs.items():
         if _mutated_refs(mutated_cols, col_expr):
             s = s.alias() # current expression refs a previous expr for THIS mutate
             mutated_cols = []
         else:
             mutated_cols.append(name)
-        s = _maybe_wrap(s).column(col_expr.label(name))
+        s = maybe_wrap(s).column(col_expr.label(name))
     return s.alias() # Safest to alias a mutate for easy reference in subsequent calls
 
-summarise = mutate # No functional difference between summarise and mutate
+#summarise = mutate # No functional difference between summarise and mutate
 
 @pipeable
 def to_pandas(engine, stmt):
@@ -272,7 +273,7 @@ def limit(num, stmt):
     Input: number of rows to limit.
     Output: Statement with n limited rows.
     """
-    s = _maybe_wrap(stmt)
+    s = maybe_wrap(stmt)
     return s.limit(num)
 
 def intersperse(lst, item):

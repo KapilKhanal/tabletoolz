@@ -1,11 +1,11 @@
 from sqlalchemy.sql.selectable import SelectBase, Alias
 from sqlalchemy import select as select_sql, func as func_sql, and_, or_
 from dfply import make_symbolic, Intention
-from functoolz import pipeable
+from ..functoolez import pipeable
 from functools import reduce
 from sqlparse import format
 from sqlalchemy.sql.elements import ColumnClause
-from more_sqlalchemy import everything
+from .more_sqlalchemy import everything
 import pandas as pd
 import sqlalchemy.sql.operators as oops
 

@@ -1,6 +1,8 @@
 import pytest
 
+
 from tabletoolz import *
+from pandas.testing import assert_frame_equal
 
 @pytest.fixture
 def response():
@@ -16,5 +18,5 @@ def test_rename(response):
 def test_rename_exception():
     # String columns
     with pytest.raises(Exception) as excinfo:
-        car_options >> to_statement >> rename(COLOUR= "color") 
+        car_options >> to_statement >> rename(COLOUR= "color")
         assert str(excinfo.value) == "str' object has no attribute 'label'"
