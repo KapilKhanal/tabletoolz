@@ -35,7 +35,7 @@ Functions Skeletons
 
 <br>
 
-* Mutate
+* Mutate * <br>
 '''It mutates a existing row. if a new column name is provided then the new column will be added in same row as new_column:mutated_value of the row. one can also mutate existing row but tis will overwrite the existing value with mutated one.'''
 
 
