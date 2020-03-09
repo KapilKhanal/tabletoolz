@@ -1,5 +1,6 @@
 from .base import *
-from .select import *
+from .tabletoolz_sql import *
+#from .select import *
 @pipeable
 def drop(cols, stmt):
     """

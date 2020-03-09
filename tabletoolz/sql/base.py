@@ -1,17 +1,19 @@
 from sqlalchemy.orm.attributes import InstrumentedAttribute
-from sqlalchemy.sql.selectable import SelectBase, Alias
-from sqlalchemy.sql.elements import _interpret_as_column_or_from
-from sqlalchemy.sql.elements import ColumnClause
+from sqlalchemy.sql.selectable import SelectBase, Alias, Select
+from sqlalchemy.sql.elements import _interpret_as_column_or_from, BinaryExpression, BindParameter, BooleanClauseList, ColumnClause
 from sqlalchemy.sql.annotation import AnnotatedColumn
+from sqlalchemy.sql import operators
 import sqlalchemy.sql.operators as oops
 from sqlalchemy import select as select_sql, func as func_sql, and_, or_
-from sqlalchemy import Integer, Float, String, DateTime
-from sqlalchemy import column
+from sqlalchemy import join as join_sql
+from sqlalchemy import Integer, Float, String, DateTime, column
 from sqlparse import format
 from dfply import make_symbolic, Intention
 from ..functoolez import pipeable
 from functools import reduce
 import pandas as pd
+import operator
+
 
 
 
@@ -296,3 +298,74 @@ class SQLFunction(object):
 
 
 func = SQLFunction()
+
+def get_onclause_col(criterion):
+    left = []
+    right = []
+    if isinstance(criterion, BooleanClauseList):
+        for clause in criterion.clauses:
+            if isinstance(clause, BinaryExpression):
+                left.append(clause.left)
+                right.append(clause.right)
+        return (left,right)
+
+def table_check(table):
+    if isinstance(table, Select):
+        table = table.alias()
+        return table
+    else:
+        table = selectq(everything(table)).alias()
+        return table
+
+
+@pipeable
+def inner_join(right, left, onclause):
+    """
+    Function: Inner Join joins on conditions 
+    
+    Input: 
+        1. Right statement/table to be joined, 
+        2. Left statement/table to be joined,  
+        3. A SQL expression representing the ON clause of the join. If left at None, it attempts to join the two tables based on a foreign key relationship
+    
+    If more than 1 expression is listed, (expressions) have to use an '&' operator. Ex: (Table1.c.colname1 = Table2.c.colname1 & Table1.c.colname2 = Table2.c.colname2)
+    
+    Output: A joined object
+    
+    Example: Table1 >> to_statement >> inner_join(Table2, onclause=(Table1.c.colname = Table2.c.colname):BooleanClauseList)
+    """
+    left, right = table_check(left), table_check(right)
+    l1,r1 = get_onclause_col(onclause)
+    l2, r2 = [c.name for c in l1], [c.name for c in r1]
+    l3, r3 = sorted([c for c in left.columns if c.name in l2], key= lambda x:x.name), sorted([c for c in right.columns if c.name in r2], key=lambda x:x.name)
+    col_dict = dict(zip(l3, r3))
+    expr_list  = [(k==v) for k,v in col_dict.items()]
+    clause = reduce(lambda x,y : operator.iand(x, y),expr_list)
+    return select_sql([left.join_sql(right, onclause=clause)])
+
+@pipeable
+def left_join(right, left, onclause):
+    """
+    Function: Join columns using an inner join
+    
+    Input: 
+        1. Right statement/table to be joined, 
+        2. Left statement/table to be joined,  
+        3. A SQL expression representing the ON clause of the join. If left at None, it attempts to join the two tables based on a foreign key relationship
+    
+    If more than 1 expression is listed, (expressions) have to use an '&' operator. Ex: (Table1.c.colname1 = Table2.c.colname1 & Table1.c.colname2 = Table2.c.colname2)
+    
+    Output: A joined object
+    
+    Example: Table1 >> to_statement >> left_join(Table2, onclause=(Table1.c.colname = Table2.c.colname):BooleanClauseList)
+    """
+    left, right = left.alias(), table_check(right)
+    print(left,right)
+    l1,r1 = get_onclause_col(onclause)
+    l2, r2 = [c.name for c in l1], [c.name for c in r1]
+    l3, r3 = sorted([c for c in left.columns if c.name in l2], key= lambda x:x.name), sorted([c for c in right.columns if c.name in r2], key=lambda x:x.name)
+    col_dict = dict(zip(l3, r3))
+    expr_list  = [(k==v) for k,v in col_dict.items()]
+    clause = reduce(lambda x,y : operator.iand(x, y),expr_list)
+    return select_sql([left.join_sql(right, onclause=clause, isouter=True)])
+
