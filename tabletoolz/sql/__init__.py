@@ -6,3 +6,4 @@ from .mutate import *
 from .rename import *
 from .unite import *
 from .base import *
+from .arrange import *
