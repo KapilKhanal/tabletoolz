@@ -16,4 +16,4 @@ sqlalchemy==1.3.13
 sqlparse == 0.3.0
 dfply == 0.3.3
 toolz == 0.10.0
-funcy == 1.14
+funcy==2.0
